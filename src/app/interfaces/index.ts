@@ -19,3 +19,10 @@ export interface Source {
     id?:    string;
     name:   string;
 }
+
+export interface ArticleByCategoryAndPage{
+    [key:string]:{
+        page: number;
+        articles: Article[];
+    }
+}
