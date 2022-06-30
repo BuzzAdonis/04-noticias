@@ -4,21 +4,24 @@ import { Observable,of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Article, NewsResponse,ArticleByCategoryAndPage } from '../interfaces';
 import {map} from 'rxjs/operators';
+import { storedArticlesByCategory } from '../data/mock-news';
 const apiKey=environment.apiKey;
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewsService {
-
+  private articleByCategoryAndPage:ArticleByCategoryAndPage=storedArticlesByCategory;
   constructor(private http:HttpClient) { }
-  private articleByCategoryAndPage:ArticleByCategoryAndPage={}
   getTopHeadLine():Observable<Article[]>{
-
+    return this.getTopHeadLineByCategory('*');
     return this.getArticleByCategory('*');
   }
 
   getTopHeadLineByCategory(category: string,loadMore:boolean=false):Observable<Article[]>{
+    
+    return of(this.articleByCategoryAndPage[category].articles);
+
     if(loadMore){
       return this.getArticleByCategory(category);
     }

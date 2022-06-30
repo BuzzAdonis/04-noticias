@@ -48,8 +48,13 @@ export class ArticleComponent  {
       handler:() => this.onShareArticle()
     };
     if(this.platform.is('capacitor')){
-      btnDinamico.unshift(share)
+      btnDinamico.unshift(share);
+    } else if (navigator.share){
+      btnDinamico.unshift(share);
+    } else{
+      console.log("no soporta el compartir");
     }
+    
     const actionSheet = await this.actionSheetController.create({
       header:'Opciones',
       buttons:btnDinamico
@@ -60,12 +65,23 @@ export class ArticleComponent  {
   }
   onShareArticle(){
     const{title, source, url}=this.article;
+    if(this.platform.is("cordova")){
     this.socialSharing.share(
       title,
       source.name,
       null,
       url
     );
+  }
+  else if (navigator.share) {
+   navigator.share({
+      title: title,
+      text: source.name,
+      url: url,
+    })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing', error));
+    }
   }
 
   onToggleFavorite(){
